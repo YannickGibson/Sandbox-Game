@@ -1,6 +1,8 @@
 #include <iostream>
+#include <locale.h>
 #include <curses.h>
 #include "player.h"
+#include <vector>
 
 using namespace std;
 
@@ -28,14 +30,14 @@ int main() {
     getch();
     endwin(); */
 
+setlocale(LC_CTYPE, "");
     
     initscr();
     refresh();
     noecho();
     curs_set(0); // hide cursor
-
     nodelay(stdscr, TRUE);
-    scrollok(stdscr, TRUE);
+    //scrollok(stdscr, TRUE);
 
 
     int stdWidth, stdHeight;
@@ -45,18 +47,25 @@ int main() {
     WINDOW * win = newwin(height, width, (stdHeight/2) - 10, 10);
     nodelay(win, TRUE);
 
-    box(win, 0, 0);
+    box(win, '#', '#');
     refresh();
     wrefresh(win);
-
     Player * p = new Player(win, 1, 1, '@');
+    vector<GameObject *> objects;
+    objects.push_back(p);
 
     do {
-        p->display();
-        wrefresh(win);
         mvwaddch(win, height - 1, width - 1, '┘');
-        timeout(100);
-    }while(p->getKeyUpdate() != 'x');
+
+
+        for (size_t i = 0; i < objects.size(); i++)
+        {
+            objects[i]->update();
+        }
+        
+        wrefresh(win);
+        timeout(70);
+    }while(p->getKey() != 'x');
 
     getch();
     endwin();
