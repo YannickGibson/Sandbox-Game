@@ -1,12 +1,6 @@
 #include "player.h"
 
-Player::Player(WINDOW * const w, const int y, const int x, const char c){
-    this->win = w;
-    this->y = y;
-    this->x = x;
-    getmaxyx(w, height, width);
-    character = c;
-}
+Player::Player (WINDOW * const w, const int y, const int x, const char c) : DynamicObject(w, y, x, c){}
 void Player::moveUp(){
     if (y > 1 + 1){
         y--;
@@ -131,6 +125,3 @@ void Player::_update(){
      }
 }
 
-void Player::_display(){
-    mvwaddch(win, y, x, character);
-}

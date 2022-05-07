@@ -1,6 +1,7 @@
 #include <iostream>
 #include <locale.h>
 #include <curses.h>
+#include "wall.h"
 #include "player.h"
 #include <vector>
 #include <tuple>
@@ -38,22 +39,28 @@ int main() {
 
     int width  = 50;
     int height = 20;
-    auto [stdWidth, stdHeight, win] = initGame(height, width);
+    auto [stdHeight, stdWidth, win] = initGame(height, width);
     
 
     box(win, '#', '#');
 
 
-    Player * p = new Player(win, 1, 1, '@');
-    vector<GameObject *> objects;
-    objects.push_back(p);
+    vector<DynamicObject *> dynamicObjects;
+    Player * p = new Player(win, 4,4, '@');
+    dynamicObjects.push_back((DynamicObject *)p);
+    
+    vector<StaticObject *> staticObjects;
+    Wall * wall = new Wall(win, 10, 2);
+    staticObjects.push_back((StaticObject *)wall);
+
+    StaticMap staticMap(staticObjects);
+ 
 
     do {
 
-
-        for (size_t i = 0; i < objects.size(); i++)
+        for (size_t i = 0; i < dynamicObjects.size(); i++)
         {
-            objects[i]->update();
+            dynamicObjects[i]->update();
         }
         
         mvwaddch(win, height - 1, width - 1, '┘');

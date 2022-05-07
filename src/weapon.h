@@ -1,8 +1,9 @@
 #include <iostream>
 #include <curses.h>
 #include "gameobject.h"
+#pragma once
 
-class Weapon : public GameObject{
+class Weapon : public DynamicObject{
     private:
         virtual void _update();
         virtual void _display();

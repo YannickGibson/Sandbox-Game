@@ -1,27 +1,31 @@
 #include <curses.h>
 
-class GameObject{
-    public:
-        GameObject(const int y, const int x, WINDOW * w, const int uIndex = 3) : {
-            updateSpeed = uIndex;
-        }
-        virtual void _display() = 0;
-        virtual void _update() = 0;
-        void update(){
-            if (updateIndex <= 0){
-                updateIndex = updateSpeed;
-                _update();
-            }
-            else{
-                updateIndex--;
-            }
-            _display();
-        }
+#pragma once
 
+class Object {
+     public:
+        Object(WINDOW * const w, const int yy, const int xx, const char c);
+        void _display();
+    protected:
+        WINDOW * win;
+        int y;
+        int x;
+        char character;
+        int width, height;
+};
+
+class StaticObject : public Object{
+    public:
+        StaticObject(WINDOW * const w, const int yy, const int xx, const char c);
+};
+
+class DynamicObject : public Object{
+    public:
+        virtual void _update() = 0;
+        DynamicObject( WINDOW * const w, const int yy, const int xx, const char c, const int uSpeed = 3);
+        void update();
     private:
         int updateSpeed = 3;
     protected:
-        int x, y;
-        WINDOW * w;
         int updateIndex = 0;
 };
