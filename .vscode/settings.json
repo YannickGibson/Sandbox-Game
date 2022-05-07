@@ -1,0 +1,9 @@
+{
+    "makefile.extensionOutputFolder": "./.vscode",
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "code-runner.executorMap": {
+        "cpp": "make run #",
+    },
+    
+    "terminal.integrated.defaultProfile.windows": "Ubuntu (WSL)"
+}

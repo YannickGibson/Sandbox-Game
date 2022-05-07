@@ -1,5 +1,10 @@
+#include <curses.h>
+
 class GameObject{
     public:
+        GameObject(const int y, const int x, WINDOW * w, const int uIndex = 3) : {
+            updateSpeed = uIndex;
+        }
         virtual void _display() = 0;
         virtual void _update() = 0;
         void update(){
@@ -14,7 +19,9 @@ class GameObject{
         }
 
     private:
-        const int updateSpeed = 3;
+        int updateSpeed = 3;
     protected:
+        int x, y;
+        WINDOW * w;
         int updateIndex = 0;
 };

@@ -1,35 +1,35 @@
 Plánovač tras
 =============
 
-*Pozor:* Pouze ukázka struktury seminární práce. V současné podobě
-je rozsah příliš malý, aby tento projekt prošel obhajobou.
-
-
 Zadání z Progtestu
 ------------------
 
-Plánování cest v mapě. Pro zadaný dopravní prostředek, mapu, start
-a cíl nalezne a vypíše nejkratší cestu.
+Naprogramujte jednoduchou 2D sandbox hru.
 
-Možná využití polymorfismu:
-- Druhy vozidel.
-- Typy map.
+Hra musí splňovat následující funkcionality
+
+Implementujte hráče (postava, loď, ...) a jeho stav (energie, životy, brnění, skore, ...)
+Vytvořte (soubojový) model zranění - alespoň dvě příčiny (pád z výšky, soubor s nepřítelem, pobyt v lávě, ...)
+Vytvořte jednoduchý model prostředí (gravitace, přelévání vody (lávy), růst stromů, ...)
+Naimplementujte načítání (konfigurace generátoru) mapy ze souboru a umožněte ukládat aktuální stav hry.
+Kde lze využít polymorfismus? (doporučené)
+
+Postavy: hráč, zvířata, přítel (obchodník), nepřítel (různé druhy)
+Efekty akcí: pád, úder, kontakt s lávou
+Prostředí: vzduch, voda, hlína, uhlí, kov, láva, žebřík,...
+Uživatelské rozhraní: konzole, ncurses, SDL, OpenGL (různé varianty), ...
+Ukázky:
+
+http://www.miniclip.com/games/motherload/en/
+https://en.wikipedia.org/wiki/Terraria
+2D Minecraft
 
 
 Upřesnění zadání
 ----------------
 
-Mapa bude obsahovat cesty, trávu, řeky a budovy. Budeme podporovat
-tři typy vozidel:
-- Auto, které jezdí jen po cestách.
-- Offroad, který zvládne i trávu.
-- Vznášedlo, který může létat všude, krom budov.
 
-Mapy budou tří druhů: Čtvercová mapa, kde každé políčko sousedí se 4
-dalšími, šestiúhelníková mapa a obecný graf.
 
-Polymorfismus využijeme jak pro typy vozidel, tak pro typy map.
 
-// TODO ještě rámcově popsat ovládání.
-
+Polymorfismus: Kazdý renderovatelný objekt bude dědit z base classy GameObject
 

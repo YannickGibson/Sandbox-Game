@@ -19,7 +19,7 @@ class Player : public GameObject{
         bool _stop = false; // for more fluent stopping, makes it delayed
         bool _firstStep = false; // for more fluent stopping, makes it delayed
         int dir = 0; // for more fluent stopping, makes it delayed
-        char character;
+        char  character;
         int x, y, width, height;
         horizontalDirection horizontal = IdleH;
         verticalDirection vertical = IdleV;

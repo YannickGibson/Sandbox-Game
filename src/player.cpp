@@ -8,26 +8,35 @@ Player::Player(WINDOW * const w, const int y, const int x, const char c){
     character = c;
 }
 void Player::moveUp(){
-    if (y > 1){
+    if (y > 1 + 1){
         y--;
-    }  
+    } 
+    else{
+        y = 1;
+    }
 }
 void Player::moveDown(){
-    if (y < height - 2){
+    if (y < height - 2 - 1){
         y++;
     }  
+    else  
+        y = height - 2;
 }
 void Player::moveLeft(){
-    if (x > 1){
+    if (x > 1 + 1){
         x--;
         x--;
-    }  
+    }
+    else  
+        x = 1;
 }
 void Player::moveRight(){
-    if (x < width - 2){
+    if (x < width - 2 - 1){
         x++;
         x++;
     }  
+    else  
+        x = width - 2;
 }
 int Player::getKey() {
 
