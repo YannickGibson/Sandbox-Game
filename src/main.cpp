@@ -1,3 +1,8 @@
+/**
+ * @file main.cpp
+ * @author Yannick Gibson (gibsoyan@fit.cvut.cz)
+ */
+
 #include <iostream>
 #include <locale.h>
 #include <curses.h>

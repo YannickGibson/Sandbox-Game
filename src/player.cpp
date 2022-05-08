@@ -1,3 +1,8 @@
+/**
+ * @file player.cpp
+ * @author Yannick Gibson (gibsoyan@fit.cvut.cz)
+ */
+
 #include "player.h"
 
 Player::Player (WINDOW * const w, const int y, const int x, const char c) : DynamicObject(w, y, x, c){}

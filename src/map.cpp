@@ -1,3 +1,8 @@
+/**
+ * @file map.cpp
+ * @author Yannick Gibson (gibsoyan@fit.cvut.cz)
+ */
+
 #include "map.h"
 #include <vector>
 
@@ -32,7 +37,7 @@ Map<T>::Map(const vector<Object *> objects)
 }
 
 template <typename T>
-bool Map<T>::collides(StaticObject &o) const
+bool Map<T>::collides(const StaticObject &o) const
 {
     if (_check(o.y, o.x))
     {

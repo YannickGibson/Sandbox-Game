@@ -1,3 +1,8 @@
+/**
+ * @file wall.h
+ * @author Yannick Gibson (gibsoyan@fit.cvut.cz)
+ */
+
 #include <iostream>
 #include <curses.h>
 #include "gameobject.h"

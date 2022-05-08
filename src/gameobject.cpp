@@ -1,3 +1,8 @@
+/**
+ * @file gameobject.cpp
+ * @author Yannick Gibson (gibsoyan@fit.cvut.cz)
+ */
+
 #include <curses.h>
 #include "gameobject.h"
 
