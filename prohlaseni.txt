@@ -1,4 +1,5 @@
-Všechen kód jsem zkopíroval z netu a nic jsem nepsal sám.
+Čestně prohlašuji že jsem všechen funkční kód psal já. Vyjímkou je template, který jsem použil od pana 
+Radka Huška https://gitlab.fit.cvut.cz/husekrad/pa2-cvika-2022/tree/master/cv10/semestralka.
+Dále mezi zdroje inspirace patří oficiální c++ dokumentace & stackoverflow 
 
-Chunk Norris
-
+Yannick Daniel Gibson

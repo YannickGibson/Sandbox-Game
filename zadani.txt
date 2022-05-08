@@ -1,4 +1,4 @@
-Plánovač tras
+2D Sandbox Hra
 =============
 
 Zadání z Progtestu
@@ -7,29 +7,112 @@ Zadání z Progtestu
 Naprogramujte jednoduchou 2D sandbox hru.
 
 Hra musí splňovat následující funkcionality
+    Implementujte hráče (postava, loď, ...) a jeho stav (energie, životy, brnění, skore, ...)
+    Vytvořte (soubojový) model zranění - alespoň dvě příčiny (pád z výšky, soubor s nepřítelem, pobyt v lávě, ...)
+    Vytvořte jednoduchý model prostředí (gravitace, přelévání vody (lávy), růst stromů, ...)
+    Naimplementujte načítání (konfigurace generátoru) mapy ze souboru a umožněte ukládat aktuální stav hry.
 
-Implementujte hráče (postava, loď, ...) a jeho stav (energie, životy, brnění, skore, ...)
-Vytvořte (soubojový) model zranění - alespoň dvě příčiny (pád z výšky, soubor s nepřítelem, pobyt v lávě, ...)
-Vytvořte jednoduchý model prostředí (gravitace, přelévání vody (lávy), růst stromů, ...)
-Naimplementujte načítání (konfigurace generátoru) mapy ze souboru a umožněte ukládat aktuální stav hry.
 Kde lze využít polymorfismus? (doporučené)
-
-Postavy: hráč, zvířata, přítel (obchodník), nepřítel (různé druhy)
-Efekty akcí: pád, úder, kontakt s lávou
-Prostředí: vzduch, voda, hlína, uhlí, kov, láva, žebřík,...
-Uživatelské rozhraní: konzole, ncurses, SDL, OpenGL (různé varianty), ...
-Ukázky:
-
-http://www.miniclip.com/games/motherload/en/
-https://en.wikipedia.org/wiki/Terraria
-2D Minecraft
+    Postavy: hráč, zvířata, přítel (obchodník), nepřítel (různé druhy)
+    Efekty akcí: pád, úder, kontakt s lávou
+    Prostředí: vzduch, voda, hlína, uhlí, kov, láva, žebřík,...
+    Uživatelské rozhraní: konzole, ncurses, SDL, OpenGL (různé varianty), ...
 
 
 Upřesnění zadání
 ----------------
 
+Funkcionality
+    1a. Implementace hráče: postava
+    1b. Stav: skore
+    2. Způsoby zranění: nepřítel, láva
+    3. Jednoduchý model prostředí: Stěny odrazující Projectiles
+    4. Načítání mapy ze souboru + uložení mapy + levelu
+
+Bude se jednat o 2D top down typ hry, kde hráč je jeden charakter a muze se pohybovat na obdelnikove ploše.
+Ukol je vyhnout se vsem nepřátelům, prokličkovat mapou a dostat se do dalšího levelu.
+
+Rozhraní:
+    ncurses
+
+Třída Object
+    bude reprezentovat renderovatelné objekty
+    bude využívána polymorficky
+
+Třída StaticObject
+    dědí z Object
+    tento objekt se nebude animovat
+    vykreslí se při načtení levelu/stage
+
+Třída DynamicObject
+    dědí z Object
+    tento objekt se BUDE animovat
+    vykresluje se skoro v každém framu
+    implementuje vykreslovací logiku: bude určovat jak rychle se bude objekt updatovat
+    update bude volat _update funkci pouze několikrát (např. 3x update() -> 1x _update(), 2x update() -> 0x _update() z toho plyne: 29x update() -> 9x _update() )
+
+Třída Player 
+    dědí z DynamicObject
+    řeší ovlácací logiku
+
+Třída Wall
+    dědí z StaticObject
+    bude na tvrdo mít podobu nějakého charakteru
+
+Třída Lava
+    dědí z StaticObject
+
+Třída Projectile 
+    možnost střílet na nepřítele
+    bude mít life span
+
+Třída Bullet
+    dědí z Projectile
+    bude se moci vertikálne nebo horizontálně odrážet
+
+Třída Map
+    bude řešit kolize s hráčem, nepřáteli
+
+Třída Enemy
+    dědí z DynamicObject
+    bude moci zabít hráče
 
 
+Polymorfismus
+----------------
+Kazdý renderovatelný objekt bude dědit přímo čí nepřímo z abstraktní base classy GameObject.
+Polymorfizmus se dále objeví u detekce kolize
 
-Polymorfismus: Kazdý renderovatelný objekt bude dědit z base classy GameObject
+Object (abstraktní)
+    StaticObject (abstraktní)
+        Wall
+        Lava
+    DynamicObject (abstraktní)
+        Player
+        Enemy
+        Projectile (abstraktní)
+            Bullet
 
+Object
+    - každý renderovaný objekt mude mít souřadnice y, x
+    - bude obsahovat renderovací funkci, ale NE updatovací
+    - defaultně se renderuje jako jeden charakter 
+StaticObject
+    - každý objekt po inicializaci zobrazí funkcí display() z base třídy
+DynamicObject
+    - bude implementovat updatovací funkci
+    - updatovací logika
+Wall 
+    - jednou zobrazí a pak se na něj nebude šahat
+Lava 
+    - zobrazi se a následně bude identifikován jako nebezpečný objekt
+Player
+    - implementuje logiku pro získání klávesy, a ladění pohybu
+    - bude obsahovat zbran která bude dědit z typu Projectile
+Enemy
+    - implementuje logiku zabití nepřítele
+Projectile
+    - base trída pro zbraně
+Bullet 
+    - základní zbran
+    - bude střílet

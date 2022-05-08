@@ -4,5 +4,5 @@
 
 class Wall : public StaticObject{
     public:
-        Wall (WINDOW * const w, const int y, const int x) : StaticObject(w, y, x, '#') { } 
+        Wall (WINDOW * const w, const int y, const int x);
 };

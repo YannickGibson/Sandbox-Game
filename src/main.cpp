@@ -5,6 +5,7 @@
 #include "player.h"
 #include <vector>
 #include <tuple>
+#include "map.h"
 
 using namespace std;
 
@@ -53,9 +54,10 @@ int main() {
     Wall * wall = new Wall(win, 10, 2);
     staticObjects.push_back((StaticObject *)wall);
 
-    StaticMap staticMap(staticObjects);
+    //Map<bool> staticMap(staticObjects);
  
 
+    // refreshing loop
     do {
 
         for (size_t i = 0; i < dynamicObjects.size(); i++)
@@ -68,7 +70,7 @@ int main() {
         timeout(70);
     }while(p->getKey() != 'x');
 
+    
     getch();
     endwin();
-
 }

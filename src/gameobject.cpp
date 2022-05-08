@@ -13,7 +13,8 @@ StaticObject::StaticObject(WINDOW * w, const int yy, const int xx, const char c)
     _display();
 }
 
-DynamicObject::DynamicObject(WINDOW * const w, const int yy, const int xx, const char c, const int uSpeed) : Object(w, yy, xx, c), updateSpeed(uSpeed){ }
+DynamicObject::DynamicObject(WINDOW * const w, const int yy, const int xx, const char c, const int uSpeed) : Object(w, yy, xx, c), updateSpeed(uSpeed){
+}
 void DynamicObject::update(){
     if (updateIndex <= 0){
         updateIndex = updateSpeed;

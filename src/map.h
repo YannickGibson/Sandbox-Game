@@ -1,22 +1,17 @@
-#include <iostream>
-using namespace std;
-#pragma once
 
+#pragma once
+#include <iostream>
+#include <vector>
 #include "gameobject.h"
+using namespace std;
 
 template <typename T>
-class Map{
-    public:
-        virtual void collides(const int y, const int x) = 0;
+class Map
+{   
     private:
-        vector<vector<bool>> _matrix;
-};
-class BlockMap{
-  void collides(StaticObject o) {
-      if (o->x < 0 || o->x > _matrix[0].size() ||
-        o->y < 0 || o->y > _matrix.size()){
-            return false;
-        }
-      return _matrix(y, x);
-  }
+        vector<vector<T>> _matrix;
+        bool _check(const int y, const int x) const;
+    public:
+        Map(const vector<Object *> objects);
+        bool collides(StaticObject &o) const;
 };
