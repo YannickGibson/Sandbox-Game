@@ -116,3 +116,11 @@ Projectile
 Bullet 
     - základní zbran
     - bude střílet
+
+
+
+####
+
+ideas:
+
+vyhledavaní nejkratsi cesty

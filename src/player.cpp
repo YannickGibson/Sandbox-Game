@@ -4,43 +4,38 @@
  */
 
 #include "player.h"
+#include "wall.h"
+#include "projectile.h"
 
-Player::Player (WINDOW * const w, const int y, const int x, const char c) : DynamicObject(w, y, x, c){}
-void Player::moveUp(){
-    if (y > 1 + 1){
+Player::Player (const int y, const int x, WINDOW * const w) : DynamicObject(y, x, w, '<', '>'){}
+void Player::moveUp(Map m){
+    if ( y > 0 
+    && dynamic_cast<Wall *>(m.get(y - 1, x)) == nullptr){
         y--;
     } 
-    else{
-        y = 1;
-    }
 }
-void Player::moveDown(){
-    if (y < height - 2 - 1){
+void Player::moveDown(Map m){
+    if (y < height - 1 
+    && dynamic_cast<Wall *>(m.get(y + 1, x)) == nullptr){
         y++;
     }  
-    else  
-        y = height - 2;
 }
-void Player::moveLeft(){
-    if (x > 1 + 1){
-        x--;
+void Player::moveLeft(Map m){
+    if (x > 0 
+    && dynamic_cast<Wall *>(m.get(y, x - 1)) == nullptr){
         x--;
     }
-    else  
-        x = 1;
 }
-void Player::moveRight(){
-    if (x < width - 2 - 1){
-        x++;
+void Player::moveRight(Map m){
+    if (x < width - 1 
+    && dynamic_cast<Wall *>(m.get(y, x + 1)) == nullptr){
         x++;
     }  
-    else  
-        x = width - 2;
 }
 int Player::getKey() {
 
     // if idle, make ready immediately
-    if (horizontal == IdleH && vertical == IdleV){
+    if (_state == Idle){
         updateIndex = 0;
     }
 
@@ -49,30 +44,16 @@ int Player::getKey() {
     switch (key)
     {
     case 'w':
-        horizontal = IdleH;
-        if (vertical == Up){
-        } 
-        else{
-        }
-        vertical = Up;
+        _state = Up;
         break;
     case 's':
-        horizontal = IdleH;
-        if (vertical == Down){
-        } 
-        vertical = Down;
+        _state = Down;
         break;
     case 'a':
-        vertical = IdleV;
-        if (horizontal == Left){
-        } 
-        horizontal = Left;
+        _state = Left;
         break;
     case 'd':
-        vertical = IdleV;
-        if (horizontal == Right){
-        } 
-        horizontal = Right;
+        _state = Right;
         break;
     case ' ':
         _stop = true;
@@ -84,49 +65,72 @@ int Player::getKey() {
     
     return key;
 }
-void Player::_update(){
-    mvwaddch(win, y, x, ' ');
-    if (dir != 0 && _stop){ // stop fast 
-        vertical = IdleV;
-        horizontal = IdleH;
-        _stop = false;
+Projectile * Player::shoot(state x){
+    switch (x)
+    {
+    case StateShootingLeft:
+        return new Bullet(y, x + 1, win, ProjectileDown);
+    case StateShootingRight:
+        return new Bullet(y, x - 1, win, ProjectileRight);
+    case StateShootingUp:
+        return new Bullet(y - 1, x, win, ProjectileUp);
+    case StateShootingDown:
+        return new Bullet(y + 1, x, win, ProjectileDown);
+    default:
+        throw invalid_argument("Invalid enum value");
     }
-    switch (vertical)
+}
+state Player::_update(Map & m){
+    auto res = Usual;
+    if (dir != 0 && _stop){ // stop fast 
+        _stop = false;
+        switch (_state)
+        {
+        case Left:
+            res = StateShootingLeft;
+            break;
+        case Right:
+            res = StateShootingRight;
+            break;
+        case Up:
+            res = StateShootingUp;
+            break;
+        case Down:
+            res = StateShootingDown;
+            break;
+        default:
+            throw invalid_argument("Invalid enum value");
+        }
+
+        _state = Idle;
+    }
+    switch (_state)
     {
     case Up:
-        if (dir == 1){
-
-        }
         dir = 1;
-        moveUp();
+        moveUp(m);
         break;
     case Down:
-        dir = -1;
-        moveDown();
+        dir = 1;
+        moveDown(m);
         break;
-    default:
-        dir = 3;
-        break;
-    }
-    switch (horizontal)
-    {
     case Left:
-        dir = 2;
-        moveLeft();
+        dir = 1;
+        moveLeft(m);
         break;
     case Right:
-        dir = -2;
-        moveRight();
+        dir = 1;
+        moveRight(m);
         break;
     default:
-        if (dir == 3)
-            dir = 0;
+        dir = 0;
         break;
     }
     if (_stop){ // stop slow delayed if starting to move from idle
-        vertical = IdleV;
-        horizontal = IdleH;
+        _state= Idle;
         _stop = false;
      }
+
+    return res;
 }
 

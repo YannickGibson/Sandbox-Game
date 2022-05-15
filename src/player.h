@@ -6,45 +6,46 @@
 #include <iostream>
 #include <curses.h>
 #include "gameobject.h"
+#include "map.h"
+#include "projectile.h"
 
 #pragma once
 
-enum horizontalDirection {Left, Right, IdleH};
-enum verticalDirection {Up, Down, IdleV};
+enum playerDirection {Left, Right, Up, Down, Idle};
 class Player : public DynamicObject{
     public:
-        Player (WINDOW * const w, const int y, const int x, const char c);
+        Player (const int y, const int x, WINDOW * const w );
 
         /**
          * @brief if possible moves player up 
          *
          */
-        void moveUp();
+        void moveUp(Map m);
         /**
          * @brief if possible moves player down 
          *
          */
-        void moveDown();
+        void moveDown(Map m);
         /**
          * @brief if possible moves player left
          *
          */
-        void moveLeft();
+        void moveLeft(Map m);
         /**
          * @brief if possible moves player right 
          *
          */
-        void moveRight();
+        void moveRight(Map m);
         /**
          * @brief reads a key input from input source. Functions according to it
          *
          */
         int getKey();
+        Projectile * shoot(state x);
     private:
-        void _update() override;
+        state _update(Map & m) override;
         bool _stop = false; // for more fluent stopping, makes it delayed
         bool _firstStep = false; // for more fluent stopping, makes it delayed
         int dir = 0; // for more fluent stopping, makes it delayed
-        horizontalDirection horizontal = IdleH;
-        verticalDirection vertical = IdleV;
+        playerDirection _state = Idle;
 };

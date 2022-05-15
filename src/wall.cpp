@@ -10,4 +10,4 @@
 #include "wall.h"
 
 
-Wall::Wall (WINDOW * const w, const int y, const int x) : StaticObject(w, y, x, '#') { } 
+Wall::Wall (const int y, const int x, WINDOW * const w) : StaticObject(y, x, w, '#', '#') { } 

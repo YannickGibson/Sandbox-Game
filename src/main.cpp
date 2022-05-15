@@ -11,11 +11,12 @@
 #include <vector>
 #include <tuple>
 #include "map.h"
+#include "projectile.h"
 
 using namespace std;
 
 tuple<int, int, WINDOW *> initGame(const int height, const int width){
-     initscr();
+    initscr();
     setlocale(LC_ALL, "");
     cbreak();
     keypad(stdscr, TRUE);
@@ -26,7 +27,8 @@ tuple<int, int, WINDOW *> initGame(const int height, const int width){
     //scrollok(stdscr, TRUE);
     int stdHeight, stdWidth;
     getmaxyx(stdscr, stdHeight, stdWidth);
-    WINDOW * win = newwin(height, width, (stdHeight/2) - 10, 10);
+    // + 2 because of the borders, and 2x for width because thats the tile width
+    WINDOW * win = newwin(height + 2, width * 2 + 2, (stdHeight/2) - 10, 10);
     nodelay(win, TRUE);
     return make_tuple(stdHeight, stdWidth, win);
 }
@@ -43,8 +45,8 @@ int main() {
     attroff(COLOR_PAIR(1));
     */
 
-    int width  = 50;
-    int height = 20;
+    int height = 15;
+    int width  = 20;
     auto [stdHeight, stdWidth, win] = initGame(height, width);
     
 
@@ -52,24 +54,33 @@ int main() {
 
 
     vector<DynamicObject *> dynamicObjects;
-    Player * p = new Player(win, 4,4, '@');
-    dynamicObjects.push_back((DynamicObject *)p);
+    Player * p = new Player(1, 1, win);
     
     vector<StaticObject *> staticObjects;
-    Wall * wall = new Wall(win, 10, 2);
-    staticObjects.push_back((StaticObject *)wall);
+    staticObjects.emplace_back(new Wall(10, 0, win));
+    staticObjects.emplace_back(new Wall(10, 1, win));
+    staticObjects.emplace_back(new Wall(10, 2, win));
+    staticObjects.emplace_back(new Wall(10, 3, win));
+    staticObjects.emplace_back(new Wall(10, 4, win));
 
-    //Map<bool> staticMap(staticObjects);
+    Map matrix (height, width);
+    matrix.add(dynamicObjects);
+    matrix.add(staticObjects);
  
-
     // refreshing loop
     do {
-
         for (size_t i = 0; i < dynamicObjects.size(); i++)
         {
-            dynamicObjects[i]->update();
+            dynamicObjects[i]->update(matrix);
         }
-        
+        if (p->update(matrix) == GG){
+            // reset level
+        }
+
+
+
+
+
         mvwaddch(win, height - 1, width - 1, '┘');
         wrefresh(win);
         timeout(70);
