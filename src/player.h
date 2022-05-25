@@ -42,6 +42,7 @@ class Player : public DynamicObject{
          */
         int getKey();
         Projectile * shoot(state x);
+        void reposition(const int yy, const int xx);
     private:
         state _update(Map & m) override;
         bool _stop = false; // for more fluent stopping, makes it delayed

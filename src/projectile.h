@@ -15,11 +15,11 @@ enum projectileState {ProjectileLeft, ProjectileRight, ProjectileUp, ProjectileD
 
 class Projectile : public DynamicObject {
     public:
-        Projectile(const int y, const int x, WINDOW * const w, const projectileState d);
-        virtual ~Projectile () {};
+        Projectile(const int y, const int x, WINDOW * const w, const int clr, const projectileState dr);
         //virtual state _update(Map m) override;
     private:
-        int livespan = 7;
+    protected:
+        int lifespan = 7;
         projectileState _dir;
 };
 
@@ -31,7 +31,7 @@ class Bullet : public Projectile {
          *
          */
         state _update(Map & m) override;
-
+        bool _spawning = true;
     public:
         Bullet(const int y, const int x, WINDOW * const w, const projectileState d);
 };
