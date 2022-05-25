@@ -31,13 +31,39 @@ void initGame()
     nodelay(stdscr, TRUE);
     keypad(stdscr, TRUE);
     //scrollok(stdscr, TRUE);
+    start_color();
+    init_pair(1, 1, 0);
+    init_pair(2, 0, 13);         // ENEMY
+    init_pair(3, 0, COLOR_BLUE); // WALL
+    init_pair(4, 0, 9);          // LAVA
+    init_pair(5, 0, 11);         // CHECKPOINT
+    init_pair(6, 0, COLOR_GREEN);         // BUSH
+    init_pair(10, 0, COLOR_CYAN);        // BULLET
+    /*
+    0. Black
+    1. Blue
+    2. Green
+    3. Cyan
+    4. Red
+    5. Magenta
+    6. Brown
+    7. White ("Light Gray")
+    8. Bright Black ("Gray")
+    9. Bright Blue
+    10. Bright Green
+    11. Bright Cyan
+    12. Bright Red
+    13. Bright Magenta
+    14. Yellow
+    15. Bright White
+    */
 }
 WINDOW *initLevel()
 {
     int stdHeight, stdWidth;
     getmaxyx(stdscr, stdHeight, stdWidth);
     // + 2 because of the borders, and 2x for width because thats the tile width
-    WINDOW *win = newwin(1 , 1, (stdHeight / 2) - 10, 10);
+    WINDOW * win = newwin(1 , 1, (stdHeight / 2) - 10, 10);
     //WINDOW *win = newwin(height + 2, width * 2 + 2, (stdHeight / 2) - 10, 10);
     nodelay(win, TRUE);
     return win;
@@ -130,32 +156,7 @@ int playLevel(int & index, int & score)
     matrix.add(staticObjects);
     matrix.add(dynamicObjects);
 
-    start_color();
-    init_pair(1, 1, 0);
-    init_pair(2, 0, 13);         // ENEMY
-    init_pair(3, 0, COLOR_BLUE); // WALL
-    init_pair(4, 0, 9);          // LAVA
-    init_pair(5, 0, 11);         // CHECKPOINT
-    init_pair(6, 0, COLOR_GREEN);         // BUSH
-    init_pair(10, 0, COLOR_CYAN);        // BULLET
-    /*
-    0. Black
-    1. Blue
-    2. Green
-    3. Cyan
-    4. Red
-    5. Magenta
-    6. Brown
-    7. White ("Light Gray")
-    8. Bright Black ("Gray")
-    9. Bright Blue
-    10. Bright Green
-    11. Bright Cyan
-    12. Bright Red
-    13. Bright Magenta
-    14. Yellow
-    15. Bright White
-    */
+    
 
     // refreshing loop
     char key;
@@ -205,6 +206,7 @@ int playLevel(int & index, int & score)
         matrix.addUpdate();
 
         mvwaddch(win, height - 1, width - 1, '┘');
+        //werase(win);
         refresh();
         wrefresh(win);
         timeout(70);

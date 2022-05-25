@@ -22,7 +22,7 @@ class Object {
          * @brief Display character that represents the object to the window
          *
          */
-        void _display();
+        void _display(WINDOW * w) const;
     protected:
         WINDOW * win;
         char charLeft;

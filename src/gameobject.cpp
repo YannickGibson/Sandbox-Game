@@ -15,7 +15,7 @@ Object::Object(const int yy, const int xx, collision col, WINDOW * const w, cons
     width  -= 1; // borders 
     height -= 2; // borders
 }
-void Object::_display(){
+void Object::_display(WINDOW * w) const{
     wattron(win, COLOR_PAIR(color));
 
     mvwaddch(win, (y + 1), (x * 2 + 1), charLeft);
