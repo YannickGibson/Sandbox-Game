@@ -9,10 +9,11 @@
 #include <curses.h>
 #include "wall.h"
 #include "enemy.h"
+#include "myWindow.h"
 
-Projectile::Projectile(const int y, const int x, WINDOW * const w, const int clr, const projectileState d) : DynamicObject(y, x, ProjectileCollider, w, '[', ']', clr, 1), _dir(d) {}
+Projectile::Projectile(const int y, const int x, const int h, const int w, const int clr, const projectileState d) : DynamicObject(y, x, ProjectileCollider, h, w, '[', ']', clr, 1), _dir(d) {}
 
-Bullet::Bullet(const int y, const int x, WINDOW * const w, const projectileState d) : Projectile (y, x, w, 10, d) {}
+Bullet::Bullet(const int y, const int x, const int h, const int w, const projectileState d) : Projectile (y, x, h, w, 10, d) {}
 
 state Bullet::_update(Map & m){
     if (_spawning == false)
@@ -65,3 +66,6 @@ state Bullet::_update(Map & m){
     return Usual;
 }
 
+bool Bullet::isDangerous() const{
+    return false;;
+}

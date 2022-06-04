@@ -7,10 +7,15 @@
 #include <iostream>
 #include "map.h"
 #include "enemy.h"
+#include "myWindow.h"
 
 using namespace std;
 
-Map::Map(size_t height, size_t width, vector<StaticObject *> * sta, vector<DynamicObject *> * dyn): _staticObjects(sta), _dynamicObjects(dyn){
+Map::Map(size_t height, size_t width, MyWindow * w): win(w){
+    vector<DynamicObject *> dynamicObjects;
+    vector<StaticObject *> staticObjects;
+}
+void Map::_initMatrix(size_t height, size_t width){
     _matrix = vector<vector<Object *>>(height);
     for (size_t j = 0; j < height; j++)
     {
@@ -20,7 +25,72 @@ Map::Map(size_t height, size_t width, vector<StaticObject *> * sta, vector<Dynam
         }
     }
 }
+void Map::_addObject(){
+    if (name == "Spawn")
+    {
+        p = new Player(y, x, height, width);
+    }
+    else if (name == "Wall")
+    {
+        staticObjects.push_back(new Wall(y, x, height, width));
+    }
+    else if (name == "Lava")
+    {
+        staticObjects.push_back(new Lava(y, x, height, width));
+    }
+    else if (name == "Enemy")
+    {
+        dynamicObjects.push_back(new Enemy(y, x, height, width));
+    }
+    else if (name == "Goal")
+    {
+        staticObjects.push_back(new Checkpoint(y, x, height, width));
+    }
+    else if (name == "Bush"){
+        dynamicObjects.push_back(new Bush(y, x, height, width));
+    }
+    else if (name == "End")
+    {
+        endCheck = true;
+        break;
+    }
+    else
+    {
+        throw invalid_argument("Corrupted reading fxile");
+    }
+}
 
+void Map::loadMap(){
+    _initMatrix();
+
+    string line;
+    ifstream myfile("assets//levels/level" + to_string(index));
+    bool endCheck = false;
+    if (myfile.is_open())
+    {
+
+        myfile >> height >> width;
+        myWindow.resize(height, width); // resize win before game object inicialization
+
+        if (myfile.is_open())
+        {
+            while (getline(myfile, line))
+            {
+                string name;
+                int x;
+                int y;
+                myfile >> name >> y >> x;
+                _addObject();
+            }
+        }
+
+        myfile.close();
+        if (endCheck == false)
+        {
+            throw invalid_argument("Error loading file");
+        }
+    }
+}
 
 bool Map::check(const int y, const int x) const
 {

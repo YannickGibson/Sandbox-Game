@@ -9,13 +9,14 @@
 #include <curses.h>
 #include "gameobject.h"
 #include "map.h"
+#include "myWindow.h"
 
 
 enum projectileState {ProjectileLeft, ProjectileRight, ProjectileUp, ProjectileDown};
 
 class Projectile : public DynamicObject {
     public:
-        Projectile(const int y, const int x, WINDOW * const w, const int clr, const projectileState dr);
+        Projectile(const int y, const int x, const int h, const int w, const int clr, const projectileState dr);
         //virtual state _update(Map m) override;
     private:
     protected:
@@ -33,5 +34,6 @@ class Bullet : public Projectile {
         state _update(Map & m) override;
         bool _spawning = true;
     public:
-        Bullet(const int y, const int x, WINDOW * const w, const projectileState d);
+        Bullet(const int y, const int x, const int h, const int w, const projectileState d);
+        bool isDangerous() const override;
 };

@@ -8,13 +8,14 @@
 #include "gameobject.h"
 #include "map.h"
 #include "projectile.h"
+#include "myWindow.h"
 
 #pragma once
 
 enum playerDirection {Left, Right, Up, Down, Idle};
 class Player : public DynamicObject{
     public:
-        Player (const int y, const int x, WINDOW * const w );
+        Player (const int y, const int x, const int h, const int w );
 
         /**
          * @brief if possible moves player up 
@@ -43,6 +44,7 @@ class Player : public DynamicObject{
         int getKey();
         Projectile * shoot(state x);
         void reposition(const int yy, const int xx);
+        bool isDangerous() const override;
     private:
         state _update(Map & m) override;
         bool _stop = false; // for more fluent stopping, makes it delayed

@@ -7,8 +7,9 @@
 #include "wall.h"
 #include "projectile.h"
 #include "enemy.h"
+#include "myWindow.h"
 
-Player::Player (const int y, const int x, WINDOW * const w) : DynamicObject(y, x, PlayerCollider, w, '<', '>', 1, 3){}
+Player::Player (const int y, const int x, const int h, const int w) : DynamicObject(y, x, PlayerCollider, h, w, '<', '>', 1, 3){}
 void Player::reposition(const int yy, const int xx){
     y = yy;
     x = xx;
@@ -88,13 +89,13 @@ Projectile * Player::shoot(state dir){
     switch (dir)
     {
     case StateShootingLeft:
-        return new Bullet(y, x - 1, win, ProjectileLeft);
+        return new Bullet(y, x - 1, height, width, ProjectileLeft);
     case StateShootingRight:
-        return new Bullet(y, x + 1, win, ProjectileRight);
+        return new Bullet(y, x + 1, height, width, ProjectileRight);
     case StateShootingUp:
-        return new Bullet(y - 1, x, win, ProjectileUp);
+        return new Bullet(y - 1, x, height, width, ProjectileUp);
     case StateShootingDown:
-        return new Bullet(y + 1, x, win, ProjectileDown);
+        return new Bullet(y + 1, x, height, width, ProjectileDown);
     default:
         throw invalid_argument("Invalid enum value");
     }
@@ -177,4 +178,6 @@ state Player::_update(Map & m){
 
     return res;
 }
-
+bool Player::isDangerous() const{
+    return false;
+}

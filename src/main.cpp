@@ -4,7 +4,7 @@
  */
 
 #include <iostream>
-#include <locale.h>
+//#include <locale.h>
 #include <curses.h>
 #include <fstream>
 #include <map>
@@ -16,60 +16,11 @@
 #include "map.h"
 #include "projectile.h"
 #include "enemy.h"
+#include "myWindow.h"
 
 using namespace std;
 
-void initGame()
-{
-    initscr();
-    setlocale(LC_ALL, "");
-    cbreak();
-    keypad(stdscr, TRUE);
-    noecho();
-    refresh();
-    curs_set(0); // hide cursor
-    nodelay(stdscr, TRUE);
-    keypad(stdscr, TRUE);
-    //scrollok(stdscr, TRUE);
-    start_color();
-    init_pair(1, 1, 0);
-    init_pair(2, 0, 13);         // ENEMY
-    init_pair(3, 0, COLOR_BLUE); // WALL
-    init_pair(4, 0, 9);          // LAVA
-    init_pair(5, 0, 11);         // CHECKPOINT
-    init_pair(6, 0, COLOR_GREEN);         // BUSH
-    init_pair(10, 0, COLOR_CYAN);        // BULLET
-    /*
-    0. Black
-    1. Blue
-    2. Green
-    3. Cyan
-    4. Red
-    5. Magenta
-    6. Brown
-    7. White ("Light Gray")
-    8. Bright Black ("Gray")
-    9. Bright Blue
-    10. Bright Green
-    11. Bright Cyan
-    12. Bright Red
-    13. Bright Magenta
-    14. Yellow
-    15. Bright White
-    */
-}
-WINDOW *initLevel()
-{
-    int stdHeight, stdWidth;
-    getmaxyx(stdscr, stdHeight, stdWidth);
-    // + 2 because of the borders, and 2x for width because thats the tile width
-    WINDOW * win = newwin(1 , 1, (stdHeight / 2) - 10, 10);
-    //WINDOW *win = newwin(height + 2, width * 2 + 2, (stdHeight / 2) - 10, 10);
-    nodelay(win, TRUE);
-    return win;
-}
-
-void loadMap(vector<StaticObject *> &staticObjects, vector<DynamicObject *> &dynamicObjects, Player *&p, int &height, int &width, WINDOW *const win, const int index)
+void loadMap(vector<StaticObject *> &staticObjects, vector<DynamicObject *> &dynamicObjects, Player *&p, int &height, int &width, MyWindow & myWindow, const int index)
 {
     string line;
     ifstream myfile("assets//levels/level" + to_string(index));
@@ -78,7 +29,7 @@ void loadMap(vector<StaticObject *> &staticObjects, vector<DynamicObject *> &dyn
     {
 
         myfile >> height >> width;
-        wresize(win, height + 2, width * 2 + 2); // resize win before game object inicialization
+        myWindow.resize(height, width); // resize win before game object inicialization
 
         if (myfile.is_open())
         {
@@ -90,26 +41,26 @@ void loadMap(vector<StaticObject *> &staticObjects, vector<DynamicObject *> &dyn
                 myfile >> name >> y >> x;
                 if (name == "Spawn")
                 {
-                    p = new Player(y, x, win);
+                    p = new Player(y, x, height, width);
                 }
                 else if (name == "Wall")
                 {
-                    staticObjects.push_back(new Wall(y, x, win));
+                    staticObjects.push_back(new Wall(y, x, height, width));
                 }
                 else if (name == "Lava")
                 {
-                    staticObjects.push_back(new Lava(y, x, win));
+                    staticObjects.push_back(new Lava(y, x, height, width));
                 }
                 else if (name == "Enemy")
                 {
-                    dynamicObjects.push_back(new Enemy(y, x, win));
+                    dynamicObjects.push_back(new Enemy(y, x, height, width));
                 }
                 else if (name == "Goal")
                 {
-                    staticObjects.push_back(new Checkpoint(y, x, win));
+                    staticObjects.push_back(new Checkpoint(y, x, height, width));
                 }
                 else if (name == "Bush"){
-                    dynamicObjects.push_back(new Bush(y, x, win));
+                    dynamicObjects.push_back(new Bush(y, x, height, width));
                 }
                 else if (name == "End")
                 {
@@ -138,44 +89,47 @@ void updateStatusBar(const int index, const int score)
 }
 
 
-int playLevel(int & index, int & score)
+int playLevel(int & index, int & score, MyWindow & myWindow)
 {
-
-
     vector<DynamicObject *> dynamicObjects;
     vector<StaticObject *> staticObjects;
     Player *p;
     int height;
     int width;
-    WINDOW * win = initLevel();
-    loadMap(staticObjects, dynamicObjects, p, height, width, win, index);
+    myWindow.initLevel();
+    loadMap(staticObjects, dynamicObjects, p, height, width, myWindow, index);
 
-    box(win, '|', '-');
 
-    Map matrix(height, width, &staticObjects, &dynamicObjects);
+    Map matrix(height, width, &staticObjects, &dynamicObjects, &myWindow);
+    matrix.loadMap();
+    
     matrix.add(staticObjects);
     matrix.add(dynamicObjects);
-
     
+
+    for (auto it = staticObjects.begin(); it != staticObjects.end(); it++)
+    {
+        (*it)->update(myWindow);
+    }
 
     // refreshing loop
     char key;
     do
     {
-        updateStatusBar(index, score);
+        //updateStatusBar(index, score);
 
-        state pState = p->update(matrix);
+        state pState = p->update(matrix, myWindow);
 
         switch (pState)
         {
         case GG:
             score -= 1;
-            delwin(win);
+            myWindow.endLevel();
             return 0;
         case NextLevel:
             score += 5;
             index += 1;
-            delwin(win);
+             myWindow.endLevel();
             return 0;
         case StateShootingLeft:
         case StateShootingRight:
@@ -183,7 +137,7 @@ int playLevel(int & index, int & score)
         case StateShootingDown:
         {
             Projectile *sh = p->shoot(pState);
-            sh->update(matrix);
+            sh->update(matrix, myWindow);
             dynamicObjects.push_back(sh);
         }
         break;
@@ -194,7 +148,7 @@ int playLevel(int & index, int & score)
         for (auto it = dynamicObjects.begin(); it != dynamicObjects.end();)
         {
             //cerr << "hello" << endl;
-            state st = (*it)->update(matrix);
+            state st = (*it)->update(matrix, myWindow);
             if (st == GG)
             {
                 delete *it;
@@ -204,16 +158,12 @@ int playLevel(int & index, int & score)
                 it++;
         }
         matrix.addUpdate();
-
-        mvwaddch(win, height - 1, width - 1, '┘');
-        //werase(win);
-        refresh();
-        wrefresh(win);
+        myWindow.refreshWindow();
         timeout(70);
         key = p->getKey();
         
     } while (key != 'x' && key != 'y');
-    delwin(win);
+    myWindow.endLevel();
     if (key == 'y'){
         return -1;
     }
@@ -223,31 +173,55 @@ int playLevel(int & index, int & score)
 
 
 void saveGame(const int index, const int score){
+    std::ofstream out("assets/save");
+    out << index << " " << score;
+    out.close();
     cout << "Game Saved" << endl;
 }
 
 void importCheckpoint(const int & index, const int & score){
     
-    int stdHeight, stdWidth;
-    getmaxyx(stdscr, stdHeight, stdWidth);
-    mvprintw(3, 20 - 10  - 10 , "Game Loaded");
+    //int stdHeight, stdWidth;
+    //getmaxyx(stdscr, stdHeight, stdWidth);
+    mvprintw(2, 20 - 10  - 10 , "Game Loaded");
+
 }
 
 int main()
 {
-    initGame();
-
 
     int index = 4;
+    /* cout << "Pick A Map (1-10) or Load Recent By Pressing 'S' | Then Enter" << endl;
+    while(true){
+        string c;
+        cin >> c;
+        if (c == ""){
+
+        }
+        else if (c == "S" || c == "s"){
+            break;
+        }
+        else if (c[0] >= '1' && c[0] <= '9'){
+            index = c[0] - '0';
+            break;
+        }
+        cout << "Incorrect Input Try Again." << endl;
+    } */
+
     int score = 0;
+    MyWindow myWindow = MyWindow();
+
+
+
     importCheckpoint(index, score);
+    int gameStatus = 0;
     do
     {
-        
-    } while (playLevel(index, score) >= 0);
+        gameStatus = playLevel(index, score, myWindow);   
+    } while (gameStatus >= 0);
 
     endwin();
-    if (index == -1){ // save game
+    if (gameStatus == -1){ // save game
         saveGame(index, score);
     }
 }

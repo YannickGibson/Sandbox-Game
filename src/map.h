@@ -8,6 +8,7 @@
 #include <vector>
 #include "gameobject.h"
 #include "enemy.h"
+#include "myWindow.h"
 using namespace std;
 
 
@@ -15,8 +16,8 @@ class Map
 {   
     private:
         vector<vector<Object *>> _matrix;
-        vector<StaticObject *> * _staticObjects;
-        vector<DynamicObject *> * _dynamicObjects;
+        vector<StaticObject *> _staticObjects;
+        vector<DynamicObject *> _dynamicObjects;
         vector<StaticObject *>  _toAddStatic;
         vector<DynamicObject *>  _toAddDynamic;
 
@@ -25,9 +26,11 @@ class Map
          *
          */
         void _tryAdd(Object * o);
+        void _initMatrix();
     public:
+      MyWindow * win;
       bool check(const int y, const int x) const;
-      Map(size_t height, size_t width, vector<StaticObject *> * sta, vector<DynamicObject *> * dyn);
+      Map(size_t height, size_t width, vector<StaticObject *> * sta, vector<DynamicObject *> * dyn, MyWindow * w);
        /**
          *   @brief adds objects to the coresponding positions in the map
          *

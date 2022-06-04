@@ -11,14 +11,17 @@
 #include "enemy.h"
 #include "player.h"
 #include "wall.h"
+#include "myWindow.h"
 
 #include <time.h>
 
-Enemy::Enemy (const int y, const int x, WINDOW * const w ) : DynamicObject(y, x, EnemyCollider, w, '/', '\\', 2, 3){
+Enemy::Enemy (const int y, const int x, const int h, const int w ) : DynamicObject(y, x, EnemyCollider, h, w, '/', '\\', 2, 3){
     _dir = rand() % 2;
     _horizontal = rand() % 2;
 }
-
+bool Enemy::isDangerous() const {
+    return false;
+}
 state Enemy::_update(Map & m){
     int newY;
     int newX;
@@ -80,8 +83,11 @@ state Enemy::_update(Map & m){
     // stationary
     return Usual;
 }
+bool Bush::isDangerous() const{
+    return false;
+}
 
-Bush::Bush (const int y, const int x, WINDOW * const w ) : DynamicObject(y, x, BushCollider, w, '}', '{', 6, 50, false){}
+Bush::Bush (const int y, const int x, const int h, const int w ) : DynamicObject(y, x, BushCollider, h, w, '}', '{', 6, 50, false){}
 Bush * Bush::trySpawnBush(Map & m) const {
     return nullptr;   
 }
@@ -92,19 +98,19 @@ state Bush::_update(Map & m){
     }
 
     if (m.check(y, x + 1) && m.get(y, x + 1) == nullptr){
-        Bush * newBush = new Bush(y, x + 1, win);
+        Bush * newBush = new Bush(y, x + 1, height, width);
         m.add(newBush);
     }
     else if (m.check(y + 1, x) && m.get(y + 1, x) == nullptr){
-        Bush * newBush = new Bush(y + 1, x, win);
+        Bush * newBush = new Bush(y + 1, x, height, width);
         m.add(newBush);
     }
     else if (m.check(y, x - 1) && m.get(y, x - 1) == nullptr){
-        Bush * newBush = new Bush(y, x - 1, win);
+        Bush * newBush = new Bush(y, x - 1, height, width);
         m.add(newBush);
     }
     else if (m.check(y - 1, x) && m.get(y - 1, x) == nullptr){
-        Bush * newBush = new Bush(y - 1, x, win);
+        Bush * newBush = new Bush(y - 1, x, height, width);
         m.add(newBush);
     }
     return Usual;
