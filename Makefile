@@ -2,14 +2,13 @@
 LOGIN = gibsoyan
 CXX = g++
 BASIC_FLAGS = -std=c++17 -O2 -g -Wall -pedantic
-FLAGS = -Wno-multichar
+FLAGS = 
 
 ####
-USE_MDFILE_AS_MAINPAGE = zadani.txt
-EXTENSION_MAPPING      = txt=md
+#USE_MDFILE_AS_MAINPAGE = zadani.txt
+#EXTENSION_MAPPING      = txt=md
 ####
 
-# -Wno-multichar zakáže UTF-8 warnings
 
 ZIP = Makefile Doxyfile DOCUMENTATION.md zadani.txt prohlaseni.txt \
   .gitignore $(wildcard examples/*) $(wildcard src/*)

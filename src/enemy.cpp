@@ -14,11 +14,9 @@ Enemy::Enemy (const int y, const int x, const int h, const int w ) : DynamicObje
 bool Enemy::isDangerous() const {
     return true;
 }
-
 bool Enemy::isToxic() const{
     return false;
 }
-
 std::string Enemy::getExport() const{
     return "Enemy";
 }

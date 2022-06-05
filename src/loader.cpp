@@ -70,7 +70,7 @@ Map * Loader::load(int index, int & score, MyWindow & win){
     myfile >> height >> width >> score;
     win.resize(height, width); // resize win before game object inicialization
     Map * m = new Map(&win, height, width, &score);
-
+;
     string line;
     while (getline(myfile, line))
     {

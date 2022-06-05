@@ -9,25 +9,25 @@
 
 Player::Player (const int y, const int x, const int h, const int w) : DynamicObject(y, x, h, w, '<', '>', 1, 3){}
 
-void Player::moveUp(Map m){
+void Player::moveUp(Map & m){
     if ( y > 0 
     && (m.isEmpty(y - 1, x) || m.get(y - 1, x)->isDangerous())){
         y--;
     } 
 }
-void Player::moveDown(Map m){
+void Player::moveDown(Map & m){
     if (y < height - 1 
     && (m.isEmpty(y + 1, x) || m.get(y + 1, x)->isDangerous() )){
         y++;
     }  
 }
-void Player::moveLeft(Map m){
+void Player::moveLeft(Map & m){
     if (x > 0 
     &&(m.isEmpty(y, x - 1) || m.get(y, x - 1)->isDangerous() )){
         x--;
     }
 }
-void Player::moveRight(Map m){
+void Player::moveRight(Map & m){
     if (x < width - 1 
     &&(m.isEmpty(y, x + 1) || m.get(y, x + 1)->isDangerous() )){
         x++;

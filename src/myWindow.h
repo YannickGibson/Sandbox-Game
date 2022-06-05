@@ -13,6 +13,8 @@ class MyWindow {
     public:
         //! Inicializes standard screen, sets colors.
         MyWindow();
+        //! Attempts to handle leaks
+        ~MyWindow();
         //! Wrapper for ncurses drawing funcion.
         void draw(const int y, const int x, const char charLeft, const char charRight, const int color);
         //! Inicializes level, by creating a new window and creating a box around it.

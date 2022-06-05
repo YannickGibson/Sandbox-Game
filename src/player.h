@@ -17,13 +17,13 @@ class Player : public DynamicObject{
     public:
         Player (const int y, const int x, const int h, const int w );
         //! If possible moves player up.
-        void moveUp(Map m);
+        void moveUp(Map & m);
         //! If possible moves player down.
-        void moveDown(Map m);
+        void moveDown(Map & m);
         //! If possible moves player left.
-        void moveLeft(Map m);
+        void moveLeft(Map & m);
         //! If possible moves player right.
-        void moveRight(Map m);
+        void moveRight(Map & m);
         //! Gets key from user
         int getKey();
         bool isDangerous() const override;

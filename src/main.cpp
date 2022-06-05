@@ -33,6 +33,8 @@ int playLevel(int & index, MyWindow & myWindow)
 
         if (p->isDead()){
             myWindow.endLevel();
+            delete p;
+            delete matrix;
             return 0;
         }
         key = p->getKey();
@@ -40,9 +42,14 @@ int playLevel(int & index, MyWindow & myWindow)
     } while (key != 'x' && key != 'y');
     if (key == 'y'){
         loader.save(*matrix, score);
+        delete p;
+        delete matrix;
         cout << "Game Saved" << endl;
         return -1;
     }
+    delete p;
+    delete matrix;
+
     return -1;
     
 }
@@ -74,7 +81,7 @@ int menu(){
 int main()
 {
     
-    int index = 6; // menu();
+    int index = menu();
     if (index == -2){
         cout << "Program ended by Ctrl + D" << endl;
         return 0; // ctrl + D
@@ -90,6 +97,4 @@ int main()
         gameStatus = playLevel(index, myWindow);   
         myWindow.endLevel();
     } while (gameStatus >= 0);
-
-    endwin();
 }

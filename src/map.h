@@ -37,9 +37,12 @@ class Map
         //! Pointer to the screen where Map is represented.
         MyWindow * _win;
     public:
-      Map(MyWindow * w, const int height, const int width, int * score);
-      MyWindow * getWindow() const;
-
+        //! Inicializes necesarry components, which includes _matrix.
+        Map(MyWindow * w, const int height, const int width, int * score);
+        //! Frees every object it holds except Player.
+        ~Map();
+        //! Returns _win.
+        MyWindow * getWindow() const;
         //! Adds DynamicObject immediately to the coresponding positions in the Map.
         void addNow(DynamicObject * obj);
         //! Adds StaticObject immediately to the coresponding positions in the Map.
@@ -64,8 +67,8 @@ class Map
         size_t getWidth() const;
         //! Returns true if position in _matrix is equal to nullptr.
         bool isEmpty(const int y, const int x) const;
-        //! Increments _score by 5.
-        void incrementScore();
+        //! Increments _score by amount.
+        void incrementScore(const int inc);
         //! Decrements _score by 5.
         void decrementScore();
         //! Returns _score.

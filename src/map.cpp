@@ -16,11 +16,22 @@ using namespace std;
 Map::Map(MyWindow * w, const int height, const int width, int * score): _win(w), _height(height), _width(width), _score(score){
     _initMatrix();
 }
+Map::~Map(){
+    for (size_t i=0; i < _dynamicObjects.size(); i++)
+    {
+        delete _dynamicObjects[i];
+    }
+    for (size_t i=0; i < _staticObjects.size(); i++)
+    {
+        delete _staticObjects[i];
+    }
+}
+
 MyWindow * Map::getWindow() const {
     return _win;
 }
-void Map::incrementScore() {
-    (*_score)+= 5;
+void Map::incrementScore(const int inc) {
+    (*_score) += inc;
 }
 void Map::decrementScore() {
     (*_score) -= 5;
@@ -54,10 +65,10 @@ void Map::_trySpawnMobs(const int playerY, const int playerX){
         && (y < playerY - spawnRadius || y > playerY + spawnRadius))
     {
         if (isEmpty(y, x)){
-            if (rand() % 30 == 0 ){
+            if (rand() % 10 == 0 ){
                 add(new Enemy(y, x, getHeight(), getWidth()));
             }
-            else if(rand() % 30 == 0 ){
+            else if(rand() % 100 == 0 ){
                 add(new Bush(y, x, getHeight(), getWidth()));
             }
         }

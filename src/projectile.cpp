@@ -25,12 +25,13 @@ bool Bullet::_collides(const int newY, const int newX, Map & m){
         else if((o->isDangerous() && !o->isToxic())){
             o->kill(m);
             kill(m);
-            m.incrementScore();
+            m.incrementScore(20);
             return true;
         }
         else if (!o->isDangerous() && o->isToxic()){
             o->kill(m);
             kill(m);
+            m.incrementScore(2);
             return true;
         }
     }

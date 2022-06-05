@@ -28,6 +28,9 @@ MyWindow::MyWindow(){
     init_pair(10, 0, COLOR_CYAN); // BULLET 
 
 } 
+MyWindow::~MyWindow(){
+    endwin();
+}
 void MyWindow::initLevel(){
     _win = newwin(1, 1, 2, 10);
     nodelay(_win, TRUE);
