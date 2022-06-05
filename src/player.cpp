@@ -4,47 +4,32 @@
  */
 
 #include "player.h"
-#include "wall.h"
 #include "projectile.h"
-#include "enemy.h"
-#include "myWindow.h"
+#include "staticObjects.h"
 
-Player::Player (const int y, const int x, const int h, const int w) : DynamicObject(y, x, PlayerCollider, h, w, '<', '>', 1, 3){}
-void Player::reposition(const int yy, const int xx){
-    y = yy;
-    x = xx;
-    _state = Idle;
-}
+Player::Player (const int y, const int x, const int h, const int w) : DynamicObject(y, x, h, w, '<', '>', 1, 3){}
 
 void Player::moveUp(Map m){
     if ( y > 0 
-    && dynamic_cast<Bush *>(m.get (y - 1, x)) == nullptr
-    && dynamic_cast<Wall *>(m.get (y - 1, x)) == nullptr
-    && dynamic_cast<Bullet*>(m.get(y - 1, x)) == nullptr){
+    && (m.isEmpty(y - 1, x) || m.get(y - 1, x)->isDangerous())){
         y--;
     } 
 }
 void Player::moveDown(Map m){
     if (y < height - 1 
-    && dynamic_cast<Bush *>(m.get(y + 1, x)) == nullptr
-    && dynamic_cast<Wall *>(m.get(y + 1, x)) == nullptr
-    && dynamic_cast<Bullet *>(m.get(y + 1, x)) == nullptr){
+    && (m.isEmpty(y + 1, x) || m.get(y + 1, x)->isDangerous() )){
         y++;
     }  
 }
 void Player::moveLeft(Map m){
     if (x > 0 
-    && dynamic_cast<Bush *>(m.get(y, x - 1)) == nullptr
-    && dynamic_cast<Wall *>(m.get(y, x - 1)) == nullptr
-    && dynamic_cast<Bullet *>(m.get(y, x - 1)) == nullptr){
+    &&(m.isEmpty(y, x - 1) || m.get(y, x - 1)->isDangerous() )){
         x--;
     }
 }
 void Player::moveRight(Map m){
     if (x < width - 1 
-    && dynamic_cast<Bush *>(m.get(y, x + 1)) == nullptr 
-    && dynamic_cast<Wall *>(m.get(y, x + 1)) == nullptr 
-    && dynamic_cast<Bullet *>(m.get(y, x + 1)) == nullptr){
+    &&(m.isEmpty(y, x + 1) || m.get(y, x + 1)->isDangerous() )){
         x++;
     }  
 }
@@ -55,8 +40,7 @@ int Player::getKey() {
         _updateIndex = 0;
     }
 
-
-    const int key = getch();
+    const int key = tolower(getch());
     switch (key)
     {
     case KEY_UP:
@@ -77,63 +61,60 @@ int Player::getKey() {
         break;
     case ' ':
         _stop = true;
+        _build = false;
+        break;
+    case 'q':
+        _build = true;
+        _stop = true;
         break;
     default:
         break;
     }
-    
-    
     return key;
 }
-Projectile * Player::shoot(state dir){
-    switch (dir)
+void Player::_tryBuildShoot(Map & m) const{
+    int instanciateY = y;
+    int instanciateX = x;
+    projectileState pState;
+    switch (_state)
     {
-    case StateShootingLeft:
-        return new Bullet(y, x - 1, height, width, ProjectileLeft);
-    case StateShootingRight:
-        return new Bullet(y, x + 1, height, width, ProjectileRight);
-    case StateShootingUp:
-        return new Bullet(y - 1, x, height, width, ProjectileUp);
-    case StateShootingDown:
-        return new Bullet(y + 1, x, height, width, ProjectileDown);
+    case Left:
+        instanciateX--;
+        pState = ProjectileLeft;
+        break;
+    case Right:
+        instanciateX++;
+        pState = ProjectileRight;
+        break;
+    case Up:
+        instanciateY--;
+        pState = ProjectileUp;
+        break;
+    case Down:
+        instanciateY++;
+        pState = ProjectileDown;
+        break;
     default:
         throw invalid_argument("Invalid enum value");
     }
-}
-state Player::_update(Map & m){
-    auto res = Usual;
-    if (dir != 0 && _stop){ // stop fast 
-        _stop = false;
-        int shootY = y;
-        int shootX = x;
-        switch (_state)
+    
+    if (m.checkBoundaries(instanciateY, instanciateX) && m.isEmpty(instanciateY, instanciateX) ){
+        if (_build && m.getScore() >= 5)
         {
-        case Left:
-            shootX--;
-            res = StateShootingLeft;
-            break;
-        case Right:
-            shootX++;
-            res = StateShootingRight;
-            break;
-        case Up:
-            shootY--;
-            res = StateShootingUp;
-            break;
-        case Down:
-            shootY++;
-            res = StateShootingDown;
-            break;
-        default:
-            throw invalid_argument("Invalid enum value");
+            m.add( new Brick(instanciateY, instanciateX, height, width) );
+            m.decrementScore();
         }
-        // dont shoot
-        
-        if (m.check(shootY, shootX) == false
-            || m.get(shootY, shootX) != nullptr ){
-            res = Usual;
-        }
+        else if(!_build){
+            m.add(new Bullet(instanciateY, instanciateX, height, width, pState) );
 
+        }
+    }
+}
+
+void Player::_update(Map & m){
+    if (dir != 0 && _stop){ // stop fast ;
+        _tryBuildShoot(m);
+        _stop = false;
         _state = Idle;
     }
     
@@ -160,15 +141,11 @@ state Player::_update(Map & m){
         dir = 0;
         break;
     }
-    
-    if (dynamic_cast<Enemy *>(m.get(y, x)) != nullptr ||
-        dynamic_cast<Lava *>(m.get(y, x)) != nullptr){
-        return GG;
+    if (!m.isEmpty(y, x)){
+        if (m.get(y, x)->isDangerous()){
+            kill(m);
+        }
     }
-    if (dynamic_cast<Checkpoint *>(m.get(y, x)) != nullptr){
-        return NextLevel;
-    }
-    
     m.set(y, x, (Object*)this);
 
     if (_stop){ // stop slow delayed if starting to move from idle
@@ -176,8 +153,13 @@ state Player::_update(Map & m){
         _stop = false;
      }
 
-    return res;
 }
 bool Player::isDangerous() const{
+    return true;
+}
+bool Player::isToxic() const{
     return false;
+}
+std::string Player::getExport() const{
+    return "Spawn";
 }

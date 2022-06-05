@@ -1,4 +1,4 @@
-15 20
+15 20 0
 Enemy 0 1
 Wall 0 5
 Wall 0 6
@@ -13,8 +13,6 @@ Wall 0 14
 Wall 0 15
 Wall 0 16
 Wall 0 17
-Goal 0 18
-Goal 0 19
 Wall 1 4
 Wall 1 11
 Wall 1 17

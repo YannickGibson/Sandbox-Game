@@ -1,4 +1,4 @@
-15 20
+15 20 0
 Wall 0 0
 Wall 0 1
 Wall 0 2
@@ -48,11 +48,9 @@ Wall 4 19
 Wall 5 0
 Wall 5 4
 Lava 5 9
-Goal 5 19
 Wall 6 0
 Wall 6 4
 Lava 6 9
-Goal 6 19
 Wall 7 0
 Wall 7 4
 Wall 7 5

@@ -1,4 +1,4 @@
-15 20
+15 20 0
 Wall 0 8
 Wall 0 9
 Wall 0 10
@@ -8,9 +8,6 @@ Lava 0 13
 Lava 0 14
 Lava 0 15
 Lava 0 16
-Goal 0 17
-Goal 0 18
-Goal 0 19
 Wall 1 7
 Enemy 1 8
 Enemy 1 9
@@ -67,7 +64,4 @@ Lava 14 13
 Lava 14 14
 Lava 14 15
 Lava 14 16
-Goal 14 17
-Goal 14 18
-Goal 14 19
 End 0 0

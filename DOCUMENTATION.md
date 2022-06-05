@@ -1,8 +1,12 @@
-2D Hra
-=============
+# 2D SandboxGame
 
-## Ovládání
+## Controls
 
-## Implementace
+-   Movement: w, a, s, or arrows
 
-TO-DO
+-   Shooting: spacebar
+
+-   Placing Brick: q - costs 5 score
+
+## Disclaimer
+This game is intended to be used as a semestral work for an university subject.

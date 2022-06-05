@@ -1,4 +1,4 @@
-15 20
+15 20 0
 Lava 0 3
 Lava 0 19
 Lava 1 10
@@ -55,7 +55,6 @@ Wall 7 17
 Wall 8 2
 Wall 8 5
 Wall 8 8
-Goal 8 9
 Wall 8 14
 Wall 8 17
 Lava 8 19
@@ -64,7 +63,6 @@ Wall 9 2
 Lava 9 4
 Wall 9 5
 Wall 9 8
-Goal 9 9
 Lava 9 11
 Wall 9 14
 Wall 9 17

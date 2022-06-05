@@ -1,12 +1,6 @@
-15 20
-Goal 0 0
-Goal 0 1
+15 20 0
 Enemy 0 19
-Goal 1 0
-Goal 1 1
 Enemy 1 8
-Goal 2 0
-Goal 2 1
 Lava 2 2
 Lava 2 3
 Lava 2 4

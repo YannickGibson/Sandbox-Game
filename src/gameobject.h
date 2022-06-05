@@ -5,60 +5,73 @@
 
 #pragma once
 
+#include <iostream>
 #include <curses.h>
 #include "myWindow.h"
 
-enum collision {PlayerCollider, EnemyCollider, ProjectileCollider, WallCollider, LavaCollider, BushCollider, CheckpointCollider};
-
 class Map;
 
+//! An polymorphic abstract class for renderable objects
 class Object {
      public:
+        //! Y coordinate in the map.
         int y;
+        //! X coordinate in the map.
         int x;
-        collision collider;
-        Object(const int yy, const int xx, collision col, const int h, const int w, const char cl, const char cr, const int clr);
+        //! Inicializes core Object properties.
+        Object(const int yy, const int xx, const int h, const int w, const char cl, const char cr, const int clr);
         virtual ~Object () {};
-        /**
-         * @brief Display character that represents the object to the window
-         *
-         */
-        void _display(MyWindow & w) const;
+        //! Marks object as dead, removes it from the map and removes traces.
+        void kill(Map & m);        
+        bool isDead() const;
+        //! Tells if object is dangerous.
         virtual bool isDangerous() const = 0;
+        //! Tells if object is toxic.
+        virtual bool isToxic() const = 0;
+        //! Tells how to export object.
+        virtual std::string getExport() const = 0; 
     protected:
+        //! Display characters that represents the object to the window.
+        void _display(MyWindow & w) const;
+        //! Puts blank characters (spaces) to where the object is currently located in the window.
+        void _removeTraces(MyWindow & w) const;
+        //! Represents height of the map.
         int height;
+        //! Represents width of the map.
         int width;
+        //! Marks object as killed.
+        bool _killed;
+    private:
+        //! Left character representation for object.
         char charLeft;
+        //! Right character representation for object.
         char charRight;
+        //! Color representation representation for object.
         int color;
 };
-enum state {Usual, GG, NextLevel, TrySpawnBush, StateShootingLeft, StateShootingRight, StateShootingUp, StateShootingDown};
+//! Object which needs to be updated only once and that is after inicialization.
 class StaticObject : public Object{
     public:
-        StaticObject(const int yy, const int xx, collision col, const int h, const int w, const char cl, const char cr, const int clr);
+        StaticObject(const int yy, const int xx, const int h, const int w, const char cl, const char cr, const int clr);
         virtual ~StaticObject () {};
+        //! Displays the object.
         void update(MyWindow & w);
 };
 
+//! Object which needs to be updated only every frame.
 class DynamicObject : public Object{
     public:
-        DynamicObject(const int yy, const int xx, collision col, const int h, const int w, const char cl, const char cr, const int clr, const int uSpeed, const bool updateInstantly = true);
+        DynamicObject(const int yy, const int xx, const int h, const int w, const char cl, const char cr, const int clr
+            , const int uSpeed, const bool updateInstantly = true);
         virtual ~DynamicObject () {};
-        /**
-         * @brief update that depends on a update logic, calls _update if the logic is satisfied
-         *
-         */
-        state update(Map & m, MyWindow & w);
-        void kill(Map & m);
+        //! update that depends on a update logic, calls _update if the logic is satisfied
+        void update(Map & m, MyWindow & w);
     private:
-        /**
-         * @brief actual update 
-         *
-         */
-        virtual state _update(Map & m) = 0;
+        //! Actual update.
+        virtual void _update(Map & m) = 0;
+        //! Speed of updating.
         int updateSpeed = 3;
-        bool _killed;
     protected:
-        void _removeTraces(MyWindow & w);
+        //! Index which iterates from zero to updateSpeed.
         int _updateIndex = 0;
 };

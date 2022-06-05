@@ -5,22 +5,45 @@
 
 
 #include "projectile.h"
-#include <iostream>
-#include <curses.h>
-#include "wall.h"
-#include "enemy.h"
-#include "myWindow.h"
 
-Projectile::Projectile(const int y, const int x, const int h, const int w, const int clr, const projectileState d) : DynamicObject(y, x, ProjectileCollider, h, w, '[', ']', clr, 1), _dir(d) {}
+Projectile::Projectile(const int y, const int x, const int h, const int w, const int clr, const projectileState d)
+ : DynamicObject(y, x, h, w, '[', ']', clr, 1), _dir(d) {}
 
 Bullet::Bullet(const int y, const int x, const int h, const int w, const projectileState d) : Projectile (y, x, h, w, 10, d) {}
 
-state Bullet::_update(Map & m){
+bool Bullet::_collides(const int newY, const int newX, Map & m){
+    if (newY < 0 || newY >= height || newX < 0 || newX >= width ){
+        kill(m);
+        return true;
+    }
+    else if (!m.isEmpty(newY, newX)){
+        Object * o = m.get(newY, newX);
+        if ((!o->isDangerous() && !o->isToxic()) || (o->isDangerous() && o->isToxic())){
+            kill(m);
+            return true;
+        }
+        else if((o->isDangerous() && !o->isToxic())){
+            o->kill(m);
+            kill(m);
+            m.incrementScore();
+            return true;
+        }
+        else if (!o->isDangerous() && o->isToxic()){
+            o->kill(m);
+            kill(m);
+            return true;
+        }
+    }
+    return false;
+}
+
+void Bullet::_update(Map & m){
     if (_spawning == false)
     {
+        m.set(y, x, nullptr);
         if (lifespan-- <= 0){
-            m.set(y, x, nullptr);
-            return GG;
+            this->kill(m);
+            return;
         }
         int newY = y;
         int newX = x;
@@ -39,33 +62,21 @@ state Bullet::_update(Map & m){
             newY++;
             break;
         }
-
-        m.set(y, x, nullptr);
-
-        if (newY < 0 || newY >= height || newX < 0 || newX >= width
-            ||  dynamic_cast<Lava *>( m.get(newY, newX) ) || dynamic_cast<Wall *>( m.get(newY, newX) ) ||  dynamic_cast<Checkpoint *>( m.get(newY, newX) )){
-            return GG;
-        }
-        auto enemy = dynamic_cast<Enemy *>( m.get(newY, newX) );
-        if (enemy != nullptr){
-            enemy->kill(m);
-            return GG;
-        }
-        auto bush = dynamic_cast<Bush *>( m.get(newY, newX) );
-        if (bush != nullptr){
-            bush->kill(m);
-            return GG;
-        }
-
+        if (_collides(newY, newX, m))
+            return;
         x = newX;
         y = newY;
     }   
     else
         _spawning = false;
     m.set(y, x, (Object *) this);
-    return Usual;
 }
-
 bool Bullet::isDangerous() const{
     return false;;
+}
+bool Bullet::isToxic() const{
+    return true;
+}
+std::string Bullet::getExport() const{
+    return "Bullet";
 }

@@ -124,3 +124,5 @@ Bullet
 ideas:
 
 vyhledavaní nejkratsi cesty
+
+pomocná javascript stránka co jsem vytvořil na tvorbu světů: https://map-generator.blueprint.repl.co

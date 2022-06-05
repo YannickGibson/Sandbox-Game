@@ -1,5 +1,5 @@
 # inspirovano z https://gitlab.fit.cvut.cz/husekrad/pa2-cvika-2022/tree/master/cv10/semestralka
-LOGIN = yannick
+LOGIN = gibsoyan
 CXX = g++
 BASIC_FLAGS = -std=c++17 -O2 -g -Wall -pedantic
 FLAGS = -Wno-multichar
