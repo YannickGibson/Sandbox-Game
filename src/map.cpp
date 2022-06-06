@@ -138,6 +138,9 @@ bool Map::checkBoundaries(const int y, const int x) const
 }
 
  Object * Map::get(const int y, const int x) const {
+     if (checkBoundaries(y, x) == false){
+         throw invalid_argument("Indices out of range");
+     }
     return _matrix[y][x];
  }
 

@@ -9,6 +9,7 @@
 #include "map.h"
 #include "myWindow.h"
 #include "loader.h"
+#include "tests.h"
 
 using namespace std;
 
@@ -78,8 +79,10 @@ int menu(){
     return index;
 }
 
+#ifndef __SEMESTRAL__TEST__
 int main()
 {
+    
     
     int index = menu();
     if (index == -2){
@@ -97,4 +100,21 @@ int main()
         gameStatus = playLevel(index, myWindow);   
         myWindow.endLevel();
     } while (gameStatus >= 0);
+    return 0;
 }
+#endif
+
+
+
+#ifdef __SEMESTRAL__TEST__
+//! \brief Runs tests from Tests class.
+int main() {
+    Tests::objectTest();
+    Tests::windowTest();
+    Tests::loaderTest();
+    Tests::loaderSaveTest();
+    Tests::mapTest();
+    Tests::playerTest();
+    cout << "Tests passed successfuly" << endl;
+}
+#endif

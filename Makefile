@@ -23,6 +23,8 @@ all: compile doc
 
 compile: ${LOGIN}
 
+
+
 ${LOGIN}: ${OBJECTS}
 	@mkdir -p build/
 	${CXX} ${BASIC_FLAGS} ${FLAGS} $^ -lncurses -o $@
@@ -34,6 +36,14 @@ build/%.o: src/%.cpp
 run: compile
 	./${LOGIN}
 
+compiletest: ${OBJECTS}
+	@mkdir -p build/
+	g++ -std=c++17 -O2 -g -Wall -pedantic -D__SEMESTRAL__TEST__ -c src/main.cpp -o build/main.o
+	${CXX} ${BASIC_FLAGS} ${FLAGS} $^ -lncurses -o $(LOGIN)
+
+test: compiletest
+	./${LOGIN}
+	
 valgrind: compile
 	valgrind ./${LOGIN}
 
