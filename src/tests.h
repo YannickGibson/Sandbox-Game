@@ -12,7 +12,7 @@ public:
     static void objectTest();
     static void windowTest();
     static void loaderTest();
-    static void loaderSaveTest();
+    static void loaderTest2();
     static void mapTest();
     static void playerTest();
 };

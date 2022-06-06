@@ -112,7 +112,7 @@ int main() {
     Tests::objectTest();
     Tests::windowTest();
     Tests::loaderTest();
-    Tests::loaderSaveTest();
+    Tests::loaderTest2();
     Tests::mapTest();
     Tests::playerTest();
     cout << "Tests passed successfuly" << endl;

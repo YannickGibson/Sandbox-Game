@@ -63,22 +63,13 @@ void Tests::loaderTest() {
     delete m;
 }
 //! Tests save Loader method.
-void Tests::loaderSaveTest() {
+void Tests::loaderTest2() {
     MyWindow w = MyWindow();
     w.initLevel();
     Loader l = Loader();
     int score;
     Map * m = l.load(-1, score, w); 
     Player * p = l.getPlayer();
-    assert(p != nullptr);
-    try{
-        //l.save(*m, score);
-    }
-    catch ( exception &e ){
-        delete m;
-        delete p;
-        assert(false);
-    }
     
     try{
         m = l.load(9999, score, w);
