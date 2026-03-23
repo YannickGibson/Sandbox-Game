@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>replit</title>
+    <style stylesheet="css/txt">
+        .container{
+            width: 90%px;
+            margin: 5% 10%;
+        }
+        html,body {
+            height: 100%;
+            width: 100%;
+            margin: 0 auto;
+            font-size: large;
+            background-color: #000;
+        }
+
+        .map {
+            background-color: #FFF;
+            width: 400px;
+            height: 300px;
+            margin:0;
+        }
+        .row {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            background-color: #50F;
+            height: 20px;
+        }
+        .tile {
+            width: 20px;
+            border: #4A7 solid 1px;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        #options{
+            display:flex;
+            background-color: rgb(27, 24, 24);
+            width: 400px;
+            justify-content: space-between;
+            margin: 2px 0 0 0;
+        }
+        .optionButton{
+            width: 100%;
+            border-width: 0;
+        }
+        #erase{ background-color: rgb(255, 47, 47); }
+        #spawn{ background-color: rgb(0, 0, 0); }
+        #wall { background-color: rgb(156, 159, 156);}
+        #lava { background-color: rgb(255, 95, 47); }
+        #enemy{ background-color: rgb(140, 41, 145); color:white; }
+        #goal { background-color: rgb(201, 190, 37); color:black; }
+        #bush { background-color: rgb(64, 201, 37); color:black; }
+        #code { 
+            display: block;
+            width: 400px;
+            border: none;
+            box-sizing: border-box;
+            margin: 2px 0 0 0;
+        }
+        #export{
+            width: 400px;
+            margin: 2px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+    <div class="map"></div>
+        <div id="options">
+            <button class="optionButton" id="erase" onclick="erase()">Erase</button>
+            <button class="optionButton" id="spawn" onclick="spawn()">Spawn</button>
+            <button class="optionButton" id="wall"  onclick="wall()">Wall</button>
+            <button class="optionButton" id="lava"  onclick="lava()">Lava</button>
+            <button class="optionButton" id="enemy" onclick="enemy()">Enemy</button>
+            <button class="optionButton" id="goal"  onclick="goal()">Goal</button>
+            <button class="optionButton" id="bush"  onclick="bush()">Bush</button>
+        </div>
+        <button id="export" onclick="dump()">Dump</button>
+        <textarea id="code" readonly wrap="soft"> </textarea>
+    </div>
+
+
+    <!-- <script src="script.js"></script>-->
+    <script>
+        const Erase = 0;
+        const Spawn = 1;
+        const Wall = 2;
+        const Lava = 3;
+        const Enemy = 4;
+        const Goal = 5;
+        const Bush = 6;
+        const height = 15;
+        const width = 20;
+        const eraseColor = document.defaultView.getComputedStyle(document.getElementById("erase"),null)["backgroundColor"];
+        const spawnColor = document.defaultView.getComputedStyle(document.getElementById("spawn"),null)["backgroundColor"];
+        const wallColor = document.defaultView.getComputedStyle(document.getElementById("wall"),null)["backgroundColor"];
+        const lavaColor = document.defaultView.getComputedStyle(document.getElementById("lava"),null)["backgroundColor"];
+        const enemyColor = document.defaultView.getComputedStyle(document.getElementById("enemy"),null)["backgroundColor"];
+        const goalColor = document.defaultView.getComputedStyle(document.getElementById("goal"),null)["backgroundColor"];
+        const bushColor = document.defaultView.getComputedStyle(document.getElementById("bush"),null)["backgroundColor"];
+
+        var colors = [eraseColor, spawnColor, wallColor, lavaColor, enemyColor, goalColor, bushColor];
+        var names = ["Erase", "Spawn", "Wall", "Lava", "Enemy", "Goal", "Bush"];
+        var mode = Wall;
+        var down = false;
+        var forceErase = false;
+        var lastMode = Wall;
+
+        var map = document.getElementsByClassName("map")[0];
+        var textarea = document.getElementById("code");
+        var tiles = document.getElementsByClassName("tile");
+
+        function erase(){
+            mode = Erase;
+        }
+        function spawn(){
+            mode = Spawn;
+        }
+        function wall(){
+            mode = Wall;
+        }
+        function lava(){
+            mode = Lava;
+        }
+        function enemy(){
+            mode = Enemy;
+        }
+        function goal(){
+            mode = Goal;
+        }
+        function bush(){
+            mode = Bush;
+        }
+        function dump(){
+            var s = `${height} ${width} 0\n`;
+            for (var y = 0; y < height; y++){
+                for (var x = 0; x < width; x++) {
+                    var _mode = tiles[y * width + x].getAttribute("mode");
+                    if (_mode != Erase){
+                        s += `${names[_mode]} ${y} ${x}\n`;
+                    }
+                }
+            }
+            s+= "End 0 0"
+            textarea.value = s;
+            
+        }
+        
+
+        
+        function mouseEnter(e) {
+            tile = e.target || e.srcElement; 
+            if (down){
+                alterTile(tile);
+            }
+        }
+        
+        function mouseLeave(e) {  
+            tile = e.target || e.srcElement;
+
+            if (tile.getAttribute("mode") == 0){
+                tile.style.backgroundColor = "transparent";
+            }
+        }
+
+        function mouseDown(e){
+            console.log(e.which);
+            if (e.which == 3) // right
+            {
+                forceErase = true;
+                lastMode = mode;
+                mode = Erase;
+            }
+            tile = e.target || e.srcElement;
+            alterTile(tile);
+            down = true;
+        }
+        function mouseUp(e){
+            down = false;
+            if (e.which == 3) // right
+            {
+                forceErase = false;
+                mode = lastMode;
+            }
+        }
+        
+        function alterTile(tile){
+            tile.style.backgroundColor = colors[mode];
+            tile.setAttribute("mode", mode);
+        }
+       
+
+
+
+        for (var j = 0; j < height; j++){
+            newRow = document.createElement("div");
+            newRow.className = "row";
+            for (var i = 0; i < width; i++){
+                newTile = document.createElement("div");
+                newTile.className = "tile";
+                newRow.appendChild(newTile);
+            }
+            map.appendChild(newRow);
+        }
+
+        for (var i = 0; i < tiles.length; i++) {
+            tiles[i].setAttribute("mode", Erase);
+            tiles[i].setAttribute("ondragstart", "return false;");
+            tiles[i].addEventListener('mouseenter', mouseEnter, false);
+            tiles[i].addEventListener('mouseleave', mouseLeave, false);
+            tiles[i].addEventListener('mousedown', mouseDown, false);
+            tiles[i].addEventListener('mouseup', mouseUp, false);
+        }
+
+        // disable left click
+        document.oncontextmenu = function(e){
+            var evt = new Object({keyCode:93});
+            stopEvent(e);
+        }
+        function stopEvent(event){
+            if(event.preventDefault != undefined)
+                event.preventDefault();
+            if(event.stopPropagation != undefined)
+                event.stopPropagation();
+        }
+        
+        map.addEventListener('mouseleave', ()=>{down = false;}, false);
+
+    //document.body.style.backgroundColor = "red";
+    </script>
+</body>
+
+</html>

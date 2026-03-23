@@ -1,5 +1,15 @@
 # 2D SandboxGame
 
+## Visualization
+
+Here are some examples of the game in action:
+
+### Map 2
+![Map Example](assets/images/map2_example.png)
+
+### Map Loaded from Save
+![Save Example](assets/images/save_example.png)
+
 ## Prerequisites
 
 This project uses the **ncurses** library for its terminal-based interface. You must have the development headers installed on your system.
@@ -48,6 +58,14 @@ To remove the `build/` directory and the executable:
 make clean
 ```
 
+## Map Builder
+
+The project includes a web-based **Map Builder** located in the `map_builder/` directory.
+
+- **How to use:** Open `map_builder/builder.html` in any web browser.
+- **Functionality:** You can visually design your own levels by placing walls, lava, enemies, and spawns.
+- **Exporting:** Use the **Dump** button to generate the level data. This data follows the format used by the game's loader, allowing you to copy-paste it into a new level file in `assets/levels/`.
+
 ## Documentation
 
 This project uses **Doxygen** to generate its technical documentation.
@@ -58,18 +76,8 @@ make doc
 ```
 After running this, you can view the documentation by opening `doc/index.html` in your web browser.
 
-## Visualization
-
-Here are some examples of the game in action:
-### Map 2
-![Map Example](assets/images/map2_example.png)
-
-### Map Loaded from Save
-
-![Save Example](assets/images/save_example.png)
-
-
 ## Controls
+
 -   Movement: `w`, `a`, `s`, `d` or **Arrow Keys**
 -   Shooting: `Spacebar`
 -   Placing Brick: `q` (costs 5 score)
