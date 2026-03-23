@@ -53,7 +53,6 @@
         #wall { background-color: rgb(156, 159, 156);}
         #lava { background-color: rgb(255, 95, 47); }
         #enemy{ background-color: rgb(140, 41, 145); color:white; }
-        #goal { background-color: rgb(201, 190, 37); color:black; }
         #bush { background-color: rgb(64, 201, 37); color:black; }
         #code { 
             display: block;
@@ -78,7 +77,6 @@
             <button class="optionButton" id="wall"  onclick="wall()">Wall</button>
             <button class="optionButton" id="lava"  onclick="lava()">Lava</button>
             <button class="optionButton" id="enemy" onclick="enemy()">Enemy</button>
-            <button class="optionButton" id="goal"  onclick="goal()">Goal</button>
             <button class="optionButton" id="bush"  onclick="bush()">Bush</button>
         </div>
         <button id="export" onclick="dump()">Dump</button>
@@ -93,7 +91,6 @@
         const Wall = 2;
         const Lava = 3;
         const Enemy = 4;
-        const Goal = 5;
         const Bush = 6;
         const height = 15;
         const width = 20;
@@ -102,11 +99,10 @@
         const wallColor = document.defaultView.getComputedStyle(document.getElementById("wall"),null)["backgroundColor"];
         const lavaColor = document.defaultView.getComputedStyle(document.getElementById("lava"),null)["backgroundColor"];
         const enemyColor = document.defaultView.getComputedStyle(document.getElementById("enemy"),null)["backgroundColor"];
-        const goalColor = document.defaultView.getComputedStyle(document.getElementById("goal"),null)["backgroundColor"];
         const bushColor = document.defaultView.getComputedStyle(document.getElementById("bush"),null)["backgroundColor"];
 
-        var colors = [eraseColor, spawnColor, wallColor, lavaColor, enemyColor, goalColor, bushColor];
-        var names = ["Erase", "Spawn", "Wall", "Lava", "Enemy", "Goal", "Bush"];
+        var colors = [eraseColor, spawnColor, wallColor, lavaColor, enemyColor, bushColor];
+        var names = ["Erase", "Spawn", "Wall", "Lava", "Enemy", "Bush"];
         var mode = Wall;
         var down = false;
         var forceErase = false;
@@ -130,9 +126,6 @@
         }
         function enemy(){
             mode = Enemy;
-        }
-        function goal(){
-            mode = Goal;
         }
         function bush(){
             mode = Bush;
