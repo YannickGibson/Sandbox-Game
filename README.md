@@ -2,13 +2,9 @@
 
 ## Visualization
 
-Here are some examples of the game in action:
 
 ### Map 2
 ![Map Example](assets/images/map2_example.png)
-
-### Map Loaded from Save
-![Save Example](assets/images/save_example.png)
 
 ## Prerequisites
 
