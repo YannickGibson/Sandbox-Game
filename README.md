@@ -48,8 +48,28 @@ To remove the `build/` directory and the executable:
 make clean
 ```
 
-## Controls
+## Documentation
 
+This project uses **Doxygen** to generate its technical documentation.
+
+To generate the HTML documentation:
+```bash
+make doc
+```
+After running this, you can view the documentation by opening `doc/index.html` in your web browser.
+
+## Visualization
+
+Here are some examples of the game in action:
+### Map 2
+![Map Example](assets/images/map2_example.png)
+
+### Map Loaded from Save
+
+![Save Example](assets/images/save_example.png)
+
+
+## Controls
 -   Movement: `w`, `a`, `s`, `d` or **Arrow Keys**
 -   Shooting: `Spacebar`
 -   Placing Brick: `q` (costs 5 score)
